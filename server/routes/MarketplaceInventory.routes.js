@@ -1,24 +1,20 @@
-const {Router} = require("express").Router();
-const {
-  checkIsDealerMiddlware,
-} = require("../middleware/CheckIsDealer.middleware");
-const {
-  checkIsLoginMiddleware,
-} = require("../middleware/CheckIsLogin.middleware");
+const { Router } = require("express").Router();
+const IsLogin = require("../middlewares/isLogin.middleware");
+const IsDealer = require("../middlewares/IsDealer.middleware");
 
 const carsInventoryRouter = Router();
 
 carsInventoryRouter
   .route("/dealer")
-  .post(checkIsLoginMiddleware, checkIsDealerMiddlware)
-  .get(checkIsLoginMiddleware, checkIsDealerMiddlware);
+  .post(IsLogin, IsDealer)
+  .get(IsLogin, IsDealer);
 
-  carsInventoryRouter.route("/").get();
+carsInventoryRouter.route("/").get();
 
 carsInventoryRouter
   .route("/:id")
-  .get(checkIsLoginMiddleware, checkIsDealerMiddlware)
-  .patch(checkIsLoginMiddleware, checkIsDealerMiddlware)
-  .delete(checkIsLoginMiddleware, checkIsDealerMiddlware);
+  .get(IsLogin, IsDealer)
+  .patch(IsLogin, IsDealer)
+  .delete(IsLogin, IsDealer);
 
 module.exports = carsInventoryRouter;
