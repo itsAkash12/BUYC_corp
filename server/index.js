@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 8080;
 const auth = require("./routes/Auth.routes");
 const connection = require("./config/db");
 const OEMRouter = require("./routes/OEM.routes");
+const carsInventoryRouter = require("./routes/MarketplaceInventory.routes");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
 
 app.use("/auth", auth);
 app.use("/oem", OEMRouter);
+app.use("/cars", carsInventoryRouter)
 
 app.listen(PORT, () => {
   connection();
