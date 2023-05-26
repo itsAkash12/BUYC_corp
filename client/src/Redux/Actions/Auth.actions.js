@@ -7,7 +7,7 @@ export const clearErrors = () => async (dispatch) => {
 export const signupAuth = (input)=> async(dispatch)=> {
     dispatch(loadingAuth({type:LOADING_AUTH}));
     try {
-        let res = await fetch(`${process.env.REACT_APP_BASE_URL}/auth/signup`,{
+        let res = await fetch(`${process.env.REACT_APP_BASEURL}/auth/signup`,{
             method:"POST",
             headers:{
                 "Content-Type":"application/json"

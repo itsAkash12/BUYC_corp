@@ -31,6 +31,7 @@ const authReducer = (state = initialState, { type, payload }) => {
         last_name:payload.user.last_name,
         email:payload.user.email,
         role:payload.user.role,
+        image:payload.user.avatar
       }
       localStorage.setItem("jwtoken", JSON.stringify(payload.token));
       localStorage.setItem("userObj", JSON.stringify(userObj));
