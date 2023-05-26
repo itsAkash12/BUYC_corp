@@ -11,16 +11,82 @@ import {
   InputLeftElement,
   InputRightElement,
   Text,
+  useToast,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { SiGmail } from "react-icons/si";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import styles from "../Styles/LoginButton.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { clearErrors, loginAuth } from "../Redux/Actions/Auth.actions";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const toast = useToast();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
+  const [inputValues, setInputValues] = useState({
+    email: "",
+    password: "",
+  });
+  const { isLoading, isAuth, token, message, isError } = useSelector(
+    (store) => store.auth
+  );
+
+  const inputFieldsHandler = (e) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    setInputValues({ ...inputValues, [name]: value });
+  };
+  const getAllFields = () => {
+    if (
+      inputValues.first_name == "" ||
+      inputValues.last_name == "" ||
+      inputValues.email == "" ||
+      inputValues.gender == "" ||
+      inputValues.password == ""
+    ) {
+      toast({
+        title: "Error",
+        description: "Please Fill all the necessary Credentials",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+    }
+    dispatch(loginAuth(inputValues));
+  };
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+    if (isError) {
+      toast({
+        title: "Error",
+        description: message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      dispatch(clearErrors());
+    }
+    if (isAuth) {
+      toast({
+        title: "Success",
+        description: message,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      dispatch(clearErrors());
+    }
+  }, [isAuth, isError]);
   return (
     <>
       {/* Main Box */}
@@ -86,6 +152,7 @@ const Login = () => {
                     placeholder="Email"
                     variant="filled"
                     required
+                    name={"email"} onChange={inputFieldsHandler}
                   />
                 </InputGroup>
               </FormControl>
@@ -97,7 +164,7 @@ const Login = () => {
                   <InputLeftElement pointerEvents="none">
                     <RiLockPasswordFill color="gray.300" />
                   </InputLeftElement>
-                  <Input type={showPassword ? "text" : "password"} />
+                  <Input type={showPassword ? "text" : "password"} variant={"filled"} placeholder="Password" name={"password"} onChange={inputFieldsHandler} />
                   <InputRightElement h={"full"}>
                     <Button
                       variant={"ghost"}
@@ -124,14 +191,35 @@ const Login = () => {
                 </Box>
                 <Box>
                   <Text cursor={"pointer"} _hover={{ color: "blue" }}>
-                    Forget Password?
+                    Forgot Password?
                   </Text>
                 </Box>
               </Box>
 
               {/* Sign in Button And Create Account Button */}
               <Box width={"100%"} marginTop={7}>
-                <button className={styles.loginbutton}>Login</button>
+              {isLoading ? (
+                  <Button
+                    isLoading
+                    borderRadius={20}
+                    colorScheme=""
+                    type="submit"
+                    className={styles.loginbutton}
+                    onClick={getAllFields}
+                  >
+                    Login
+                  </Button>
+                ) : (
+                  <Button
+                    borderRadius={20}
+                    colorScheme=""
+                    type="submit"
+                    className={styles.loginbutton}
+                    onClick={getAllFields}
+                  >
+                    Login
+                  </Button>
+                )}
               </Box>
 
               {/* Create Account Button */}
@@ -147,7 +235,7 @@ const Login = () => {
                   <Text fontWeight={500}>New User?</Text>
                 </Box>
                 <Box>
-                  <Link to={"/sign-up"}>
+                  <Link to={"/signup"}>
                     <Text
                       textDecoration={"underline"}
                       color={"blue"}
