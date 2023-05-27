@@ -1,4 +1,4 @@
-const { Router } = require("express").Router();
+const { Router } = require("express");
 const IsLogin = require("../middlewares/isLogin.middleware");
 const IsDealer = require("../middlewares/IsDealer.middleware");
 

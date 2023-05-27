@@ -83,7 +83,7 @@ export default function Navbar() {
             display={{ base: "none", md: "flex" }}
             alignItems="center"
           >
-            <Link to={"/create"}>
+            <Link to={"/dashboard"}>
               <Text
                 fontSize={20}
                 fontWeight={500}

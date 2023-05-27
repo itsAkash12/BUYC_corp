@@ -14,6 +14,7 @@ import styles from "../Styles/LoginButton.module.css";
 import Navbar from "../Components/Navbar";
 
 function CarDetails() {
+  const [flag, setFlag] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [inputValues, setInputValues] = useState({
     image: "",
@@ -33,6 +34,7 @@ function CarDetails() {
     formData.append("cloud_name", process.env.REACT_APP_cloud_name);
 
     try {
+      setFlag(true);
       const response = await fetch(
         "https://api.cloudinary.com/v1_1/dyv0uxpi2/upload",
         {
@@ -44,11 +46,14 @@ function CarDetails() {
       if (response.ok) {
         const data = await response.json();
         setSelectedImage(data.secure_url);
+        setFlag(false);
       } else {
         console.error("Image upload failed.");
+        setFlag(false);
       }
     } catch (error) {
       console.error("Image upload error:", error);
+      setFlag(false);
     }
   };
   const handleInputFields = (e) => {
@@ -63,7 +68,7 @@ function CarDetails() {
 
   return (
     <Box>
-        <Navbar></Navbar>
+      <Navbar></Navbar>
       <Box
         display="flex"
         justifyContent="center"
@@ -82,12 +87,13 @@ function CarDetails() {
         >
           <FormControl>
             <FormLabel fontSize="lg">Image</FormLabel>
-            <Box mb={4}>
+            <Box mb={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
               {selectedImage ? (
                 <Image
                   src={selectedImage}
                   alt="Selected Car Image"
                   borderRadius="md"
+                  w={"xs"}
                 />
               ) : (
                 <Input
@@ -143,6 +149,7 @@ function CarDetails() {
             </VStack>
 
             <Button
+              isLoading={flag}
               borderRadius={20}
               colorScheme=""
               type="submit"

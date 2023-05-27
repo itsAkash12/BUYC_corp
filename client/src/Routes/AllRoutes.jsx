@@ -3,6 +3,7 @@ import Login from "../Pages/Login";
 import SignUp from "../Pages/SignUp";
 import Homepage from "../Pages/Homepage";
 import CarDetails from "../Pages/CarDetails";
+import PrivateRoute from "./PrivateRoute";
 
 const AllRoutes = () => {
   return (
@@ -10,7 +11,7 @@ const AllRoutes = () => {
       <Route path="/" element={<Homepage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/car-details" element={<CarDetails />} />
+      <Route path="/car-details" element={<PrivateRoute><CarDetails /></PrivateRoute>} />
     </Routes>
   );
 };

@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const Cars_inventory_Schema = new mongoose.Schema(
+const CarInventorySchema = new mongoose.Schema(
   {
     dealerID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Auth",
+      ref: "auths",
       trim: true,
     },
     title: {
@@ -39,10 +39,8 @@ const Cars_inventory_Schema = new mongoose.Schema(
   }
 );
 
-const Cars_inventory_Model = mongoose.model(
-  "Car_inventory",
-  Cars_inventory_Schema
+const CarInventoryModel = mongoose.model(
+  "CarInventory",
+  CarInventorySchema
 );
-module.exports = {
-  Cars_inventory_Model,
-};
+module.exports = CarInventoryModel;
