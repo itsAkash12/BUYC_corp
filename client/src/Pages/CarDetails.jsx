@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Button,
@@ -6,6 +6,7 @@ import {
   FormLabel,
   Image,
   Input,
+  Select,
   Text,
   Textarea,
   VStack,
@@ -19,12 +20,17 @@ function CarDetails() {
   const [inputValues, setInputValues] = useState({
     image: "",
     title: "",
-    point1: "",
-    point2: "",
-    point3: "",
-    point4: "",
-    point5: "",
+    description: [],
+    kilometersOnOdometer: "",
+    majorScratches: "",
+    originalPaint: "",
+    accidentsReported: "",
+    previousBuyers: "",
+    registrationPlace: "",
+    OEM_SpecsID:""
   });
+  const [searchValue, setSearchValue] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -56,19 +62,99 @@ function CarDetails() {
       setFlag(false);
     }
   };
+
   const handleInputFields = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setInputValues({ ...inputValues, [name]: value });
+    const { name, value } = e.target;
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
   };
-  const handleSubmit = () => {
+
+  const handleDescriptionChange = (e, index) => {
+    const { value } = e.target;
+    setInputValues((prevValues) => {
+      const updatedDescription = [...prevValues.description];
+      updatedDescription[index] = value;
+      return {
+        ...prevValues,
+        description: updatedDescription,
+      };
+    });
+  };
+
+  const addDescriptionPoint = () => {
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      description: [...prevValues.description, ""],
+    }));
+  };
+
+  const removeDescriptionPoint = (index) => {
+    setInputValues((prevValues) => {
+      const updatedDescription = [...prevValues.description];
+      updatedDescription.splice(index, 1);
+      return {
+        ...prevValues,
+        description: updatedDescription,
+      };
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
     inputValues.image = selectedImage;
+    setInputValues({
+      image: "",
+      title: "",
+      description: [],
+      kilometersOnOdometer: "",
+      majorScratches: "",
+      originalPaint: "",
+      accidentsReported: "",
+      previousBuyers: "",
+      registrationPlace: "",
+      OEM_SpecsID:""
+    });
+    setSelectedImage(null);
     console.log(inputValues);
   };
 
+  const handleSearchInputChange = (e) => {
+    const { value } = e.target;
+    setSearchValue(value);
+  };
+  const getData = async () => {
+    try {
+      // Make the API call to search for OEM_Specs based on the search value
+      const response = await fetch(
+        `${process.env.REACT_APP_BASEURL}/oem?query=${searchValue}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setSearchResults(data.data);
+        // console.log(data);
+      } else {
+        console.error("Search failed.");
+      }
+    } catch (error) {
+      console.error("Search error:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Perform search query
+
+    if (searchValue) {
+      setTimeout(async () => {
+        getData(searchValue);
+      }, 1000);
+    }
+  }, [searchValue]);
+
   return (
     <Box>
-      <Navbar></Navbar>
+      <Navbar />
       <Box
         display="flex"
         justifyContent="center"
@@ -85,80 +171,159 @@ function CarDetails() {
           borderRadius="md"
           boxShadow="md"
         >
-          <FormControl>
-            <FormLabel fontSize="lg">Image</FormLabel>
-            <Box mb={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-              {selectedImage ? (
-                <Image
-                  src={selectedImage}
-                  alt="Selected Car Image"
-                  borderRadius="md"
-                  w={"xs"}
-                />
-              ) : (
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  isRequired
-                />
+          <form onSubmit={handleSubmit}>
+            <FormControl>
+              <FormLabel fontSize="lg">Image</FormLabel>
+              <Box
+                mb={4}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                {selectedImage ? (
+                  <Image
+                    src={selectedImage}
+                    alt="Selected Car Image"
+                    borderRadius="md"
+                    w={"xs"}
+                  />
+                ) : (
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    isRequired
+                  />
+                )}
+              </Box>
+
+              <FormLabel fontSize="lg">Title</FormLabel>
+              <Input
+                placeholder="Enter car title"
+                mb={4}
+                name="title"
+                value={inputValues.title}
+                onChange={handleInputFields}
+                isRequired
+              />
+
+              <FormLabel fontSize="lg">Description</FormLabel>
+              <VStack align="start" spacing={2} mb={4}>
+                {inputValues.description.map((point, index) => (
+                  <Box key={index}>
+                    <Textarea
+                      placeholder={`Bullet ${index + 1}`}
+                      value={point}
+                      onChange={(e) => handleDescriptionChange(e, index)}
+                      isRequired
+                    />
+                    <Button
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => removeDescriptionPoint(index)}
+                    >
+                      Remove
+                    </Button>
+                  </Box>
+                ))}
+                <Button size="sm" onClick={addDescriptionPoint}>
+                  Add Point
+                </Button>
+              </VStack>
+
+              <FormLabel fontSize="lg">Kilometers on Odometer</FormLabel>
+              <Input
+                placeholder="Enter kilometers on odometer"
+                mb={4}
+                name="kilometersOnOdometer"
+                type="number"
+                value={inputValues.kilometersOnOdometer}
+                onChange={handleInputFields}
+                isRequired
+              />
+
+              <FormLabel fontSize="lg">Major Scratches</FormLabel>
+              <Input
+                placeholder="Enter major scratches details"
+                mb={4}
+                name="majorScratches"
+                value={inputValues.majorScratches}
+                onChange={handleInputFields}
+                isRequired
+              />
+
+              <FormLabel fontSize="lg">Original Paint</FormLabel>
+              <Select
+                placeholder="Select an option"
+                mb={4}
+                name="originalPaint"
+                value={inputValues.originalPaint}
+                onChange={handleInputFields}
+                isRequired
+              >
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </Select>
+
+              <FormLabel fontSize="lg">Accidents Reported</FormLabel>
+              <Input
+                placeholder="Enter number of accidents reported"
+                mb={4}
+                name="accidentsReported"
+                type="number"
+                value={inputValues.accidentsReported}
+                onChange={handleInputFields}
+                isRequired
+              />
+
+              <FormLabel fontSize="lg">Previous Buyers</FormLabel>
+              <Input
+                placeholder="Enter number of previous buyers"
+                mb={4}
+                name="previousBuyers"
+                type="number"
+                value={inputValues.previousBuyers}
+                onChange={handleInputFields}
+                isRequired
+              />
+
+              <FormLabel fontSize="lg">Registration Place</FormLabel>
+              <Input
+                placeholder="Enter registration place"
+                mb={4}
+                name="registrationPlace"
+                value={inputValues.registrationPlace}
+                onChange={handleInputFields}
+                isRequired
+              />
+              <FormLabel fontSize="lg">Search OEM Specs</FormLabel>
+              <Input
+                placeholder="Enter search query"
+                mb={4}
+                value={searchValue}
+                onChange={handleSearchInputChange}
+                type="search"
+              />
+
+              {searchResults && searchResults.length > 0 && (
+                <Select onChange={handleInputFields} name="OEM_SpecsID" >
+                  {searchResults.map((result) => (
+                    <option key={result._id} value={result._id}>{result.Model}</option>
+                  ))}
+                </Select>
               )}
-            </Box>
-
-            <FormLabel fontSize="lg">Title</FormLabel>
-            <Input
-              placeholder="Enter car title"
-              mb={4}
-              name="title"
-              onChange={handleInputFields}
-              isRequired
-            />
-
-            <FormLabel fontSize="lg">5 Bullet Point Description</FormLabel>
-            <VStack align="start" spacing={2} mb={4}>
-              <Textarea
-                placeholder="Bullet 1"
-                name="point1"
-                onChange={handleInputFields}
-                isRequired
-              />
-              <Textarea
-                placeholder="Bullet 2"
-                name="point2"
-                onChange={handleInputFields}
-                isRequired
-              />
-              <Textarea
-                placeholder="Bullet 3"
-                name="point3"
-                onChange={handleInputFields}
-                isRequired
-              />
-              <Textarea
-                placeholder="Bullet 4"
-                name="point4"
-                onChange={handleInputFields}
-                isRequired
-              />
-              <Textarea
-                placeholder="Bullet 5"
-                name="point5"
-                onChange={handleInputFields}
-                isRequired
-              />
-            </VStack>
-
-            <Button
-              isLoading={flag}
-              borderRadius={20}
-              colorScheme=""
-              type="submit"
-              className={styles.loginbutton}
-              onClick={handleSubmit}
-            >
-              SUBMIT
-            </Button>
-          </FormControl>
+              <Button
+                type="submit"
+                colorScheme=""
+                size="lg"
+                width="full"
+                className={styles.loginbutton}
+                borderRadius={20}
+              >
+                Submit
+              </Button>
+            </FormControl>
+          </form>
         </Box>
       </Box>
     </Box>
