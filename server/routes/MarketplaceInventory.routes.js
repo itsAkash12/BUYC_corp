@@ -1,20 +1,19 @@
 const { Router } = require("express");
 const IsLogin = require("../middlewares/isLogin.middleware");
 const IsDealer = require("../middlewares/IsDealer.middleware");
+const postMarketplaceInventory = require("../controllers/MarketplaceInventory/postMarketplaceInventory");
+const getMarkteplaceInventory = require("../controllers/MarketplaceInventory/getMarketplaceInventory");
 
-const carsInventoryRouter = Router();
+const marketplaceInventory = Router();
 
-carsInventoryRouter
-  .route("/dealer")
-  .post(IsLogin, IsDealer)
-  .get(IsLogin, IsDealer);
+marketplaceInventory.post("/", IsLogin, IsDealer, postMarketplaceInventory);
 
-carsInventoryRouter.route("/").get();
+marketplaceInventory.route("/").get(getMarkteplaceInventory);
 
-carsInventoryRouter
+marketplaceInventory
   .route("/:id")
   .get(IsLogin, IsDealer)
   .patch(IsLogin, IsDealer)
   .delete(IsLogin, IsDealer);
 
-module.exports = carsInventoryRouter;
+module.exports = marketplaceInventory;

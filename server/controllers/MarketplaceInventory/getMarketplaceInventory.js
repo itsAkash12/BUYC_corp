@@ -1,6 +1,6 @@
-const OemModel = require("../../models/OEM.model");
+const MarketplaceInventoryModel = require("../../models/MarketplaceInventory.model");
 
-const GetOemSpecs = async (req, res) => {
+const getMarkteplaceInventory = async (req, res) => {
   try {
     const { query } = req.query;
 
@@ -10,11 +10,11 @@ const GetOemSpecs = async (req, res) => {
       : {};
 
     // Search for OEM_Specs based on the search query
-    const OEM_Specs_Data = await OemModel.find(searchQuery);
+    const marketplaceInventoryData = await MarketplaceInventoryModel.find(searchQuery);
 
     const response = {
       status: "success",
-      data: OEM_Specs_Data,
+      data: marketplaceInventoryData,
     };
 
     return res.status(200).json(response);
@@ -28,4 +28,4 @@ const GetOemSpecs = async (req, res) => {
   }
 };
 
-module.exports = GetOemSpecs;
+module.exports = getMarkteplaceInventory;

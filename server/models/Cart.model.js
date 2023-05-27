@@ -7,9 +7,9 @@ const CartSchema = new mongoose.Schema(
       ref: "auths",
       trim: true,
     },
-    CarInventoryID: {
+    MarketplaceInventoryID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "CarInventory",
+      ref: "MarketplaceInventory",
       trim: true,
     },
   },

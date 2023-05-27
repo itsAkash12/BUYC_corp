@@ -14,7 +14,7 @@ const PostOemSpecs = async (req, res) => {
     return res.status(200).json(response);
   } catch (error) {
     const error_response = {
-      status: "fail",
+      status: "failed",
       message: "An error occurred",
     };
     console.log(error);
