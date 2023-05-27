@@ -10,12 +10,14 @@ import {
   Text,
   Textarea,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import styles from "../Styles/LoginButton.module.css";
 import Navbar from "../Components/Navbar";
 
 function CarDetails() {
   const [flag, setFlag] = useState(false);
+  const toast = useToast();
   const [selectedImage, setSelectedImage] = useState(null);
   const [inputValues, setInputValues] = useState({
     image: "",
@@ -27,7 +29,7 @@ function CarDetails() {
     accidentsReported: "",
     previousBuyers: "",
     registrationPlace: "",
-    OEM_SpecsID:""
+    OEM_SpecsID: "",
   });
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -104,6 +106,7 @@ function CarDetails() {
   const handleSubmit = (e) => {
     e.preventDefault();
     inputValues.image = selectedImage;
+    sendData();
     setInputValues({
       image: "",
       title: "",
@@ -114,10 +117,54 @@ function CarDetails() {
       accidentsReported: "",
       previousBuyers: "",
       registrationPlace: "",
-      OEM_SpecsID:""
+      OEM_SpecsID: "",
     });
     setSelectedImage(null);
-    console.log(inputValues);
+  };
+
+  const sendData = async () => {
+    const token = JSON.parse(localStorage.getItem("jwtoken"));
+    try {
+      let res = await fetch(`${process.env.REACT_APP_BASEURL}/cars`, {
+        method: "POST",
+        headers: {
+          authorization: token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(inputValues),
+      });
+      let result = await res.json();
+      if(result.status == "success"){
+        toast({
+          title: "Success",
+          description: "Car Data added Successfully",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }else{
+        toast({
+          title: "Error",
+          description: result.message,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
+      console.log(result)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      console.log(error.message);
+    }
   };
 
   const handleSearchInputChange = (e) => {
@@ -306,9 +353,11 @@ function CarDetails() {
               />
 
               {searchResults && searchResults.length > 0 && (
-                <Select onChange={handleInputFields} name="OEM_SpecsID" >
+                <Select onChange={handleInputFields} name="OEM_SpecsID">
                   {searchResults.map((result) => (
-                    <option key={result._id} value={result._id}>{result.Model}</option>
+                    <option key={result._id} value={result._id}>
+                      {result.Model}
+                    </option>
                   ))}
                 </Select>
               )}

@@ -1,6 +1,6 @@
 const MarketplaceInventoryModel = require("../../models/MarketplaceInventory.model");
 
-const postMarketplaceInventory = async () => {
+const postMarketplaceInventory = async (req,res) => {
   try {
     const inventoryData = req.body;
     inventoryData.userID = req.userID;

@@ -3,15 +3,15 @@ const AuthModel  = require("../models/Auth.model");
 
 const IsLogin = async (req, res, next) => {
   try {
-    let token = req.headers.token || false;
+    let token = req.headers.authorization || false;
     if (!token) {
       return res
         .status(404)
         .send({ status: "Not found!", message: "Please Login First" });
     }
-    let { _id } = jwt.verify(token, process.env.SECRET_KEY);
+    let { id } = jwt.verify(token, process.env.SECRET_KEY);
 
-    req.userID = _id;
+    req.userID = id;
     next();
   } catch (error) {
     // Create error response
