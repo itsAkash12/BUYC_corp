@@ -71,6 +71,7 @@ function CarDetails() {
       ...prevValues,
       [name]: value,
     }));
+    console.log(value);
   };
 
   const handleDescriptionChange = (e, index) => {
@@ -355,7 +356,7 @@ function CarDetails() {
               {searchResults && searchResults.length > 0 && (
                 <Select onChange={handleInputFields} name="OEM_SpecsID">
                   {searchResults.map((result) => (
-                    <option key={result._id} value={result._id}>
+                    <option  key={result._id} value={result._id}>
                       {result.Model}
                     </option>
                   ))}

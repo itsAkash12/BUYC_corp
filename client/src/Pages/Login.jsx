@@ -92,6 +92,7 @@ const Login = () => {
       {/* Main Box */}
       <Box minHeight={"100vh"} width={"100%"}>
         {/* Logo */}
+
         <Box
           paddingLeft={{ base: 3, md: 40 }}
           paddingTop={{ base: 3, md: 5 }}
@@ -121,6 +122,11 @@ const Login = () => {
 
           {/* Login Form */}
           <Box>
+            <Box textAlign={"center"} m={"5"} borderWidth={"thick"} color={"red"} borderRadius={"20px"}>
+              <Heading size={"md"}>Admin Credentials</Heading>
+              <Text>Email: admin@gmail.com</Text>
+              <Text>password: admin</Text>
+            </Box>
             <Heading
               as={"h1"}
               size={"2xl"}
@@ -152,7 +158,8 @@ const Login = () => {
                     placeholder="Email"
                     variant="filled"
                     required
-                    name={"email"} onChange={inputFieldsHandler}
+                    name={"email"}
+                    onChange={inputFieldsHandler}
                   />
                 </InputGroup>
               </FormControl>
@@ -164,7 +171,13 @@ const Login = () => {
                   <InputLeftElement pointerEvents="none">
                     <RiLockPasswordFill color="gray.300" />
                   </InputLeftElement>
-                  <Input type={showPassword ? "text" : "password"} variant={"filled"} placeholder="Password" name={"password"} onChange={inputFieldsHandler} />
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    variant={"filled"}
+                    placeholder="Password"
+                    name={"password"}
+                    onChange={inputFieldsHandler}
+                  />
                   <InputRightElement h={"full"}>
                     <Button
                       variant={"ghost"}
@@ -198,7 +211,7 @@ const Login = () => {
 
               {/* Sign in Button And Create Account Button */}
               <Box width={"100%"} marginTop={7}>
-              {isLoading ? (
+                {isLoading ? (
                   <Button
                     isLoading
                     borderRadius={20}

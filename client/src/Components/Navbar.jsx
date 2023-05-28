@@ -90,7 +90,17 @@ export default function Navbar() {
                 marginTop={{ base: 0, md: 2 }}
                 color={"gray.600"}
               >
-                Dashboard
+                My Dashboard
+              </Text>
+            </Link>
+            <Link to={"/cart"}>
+              <Text
+                fontSize={20}
+                fontWeight={500}
+                marginTop={{ base: 0, md: 2 }}
+                color={"gray.600"}
+              >
+                My Cart
               </Text>
             </Link>
             {token ? (
@@ -174,7 +184,7 @@ export default function Navbar() {
                     transition="background 200ms ease-in-out"
                     transitionDuration="200ms"
                   >
-                    <Text fontWeight="500">Dashboard</Text>
+                    <Text fontWeight="500">My Dashboard</Text>
                   </MenuItem>
                 </Link>
 
@@ -196,6 +206,24 @@ export default function Navbar() {
                 </Link>
 
                 <MenuDivider />
+                {/* Dashboard Button */}
+                <Link to={"/cart"}>
+                  {" "}
+                  <MenuItem
+                    background={"white"}
+                    _hover={{
+                      background: "#1a202c",
+                      color: "white",
+                    }}
+                    transition="background 200ms ease-in-out"
+                    transitionDuration="200ms"
+                  >
+                    <Text fontWeight="500">My Cart</Text>
+                  </MenuItem>
+                </Link>
+
+                <MenuDivider />
+                
                 {/* Logout Button */}
                 <MenuItem
                   background={"white"}

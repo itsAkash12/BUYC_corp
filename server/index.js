@@ -6,6 +6,7 @@ const auth = require("./routes/Auth.routes");
 const connection = require("./config/db");
 const OEMRouter = require("./routes/OEM.routes");
 const marketplaceInventory = require("./routes/MarketplaceInventory.routes");
+const cartRouter = require("./routes/Cart.routes");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 app.use("/auth", auth);
 app.use("/oem", OEMRouter);
 app.use("/cars", marketplaceInventory)
+app.use("/carts", cartRouter)
 
 app.listen(PORT, () => {
   connection();

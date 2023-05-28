@@ -1,18 +1,11 @@
 const MarketplaceInventoryModel = require("../../models/MarketplaceInventory.model");
 
-const getMarkteplaceInventory = async (req, res) => {
+const getDealerInventory = async (req, res) => {
+    const userID = req.userID;
   try {
-    const { query } = req.query;
-
-    // Prepare the search query
-    const searchQuery = query
-      ? { Model: { $regex: query, $options: "i" } }
-      : {};
 
     // Search for OEM_Specs based on the search query
-    const marketplaceInventoryData = await MarketplaceInventoryModel.find(
-      searchQuery
-    ).populate("OEM_SpecsID");
+    const marketplaceInventoryData = await MarketplaceInventoryModel.find({userID}).populate("OEM_SpecsID");
 
     const response = {
       status: "success",
@@ -30,4 +23,4 @@ const getMarkteplaceInventory = async (req, res) => {
   }
 };
 
-module.exports = getMarkteplaceInventory;
+module.exports = getDealerInventory;
