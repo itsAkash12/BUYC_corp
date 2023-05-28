@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Grid, Image, Text, useToast } from "@chakra-ui/react";
+import { Box, Button, Center, Grid, Heading, Image, Text, useToast } from "@chakra-ui/react";
 import Navbar from "../Components/Navbar";
 import styles from "../Styles/LoginButton.module.css";
 import { useNavigate } from "react-router-dom";
 import SingleDetails from "./SingleDetails";
+import Loader from "../Components/Loader";
 
 function Homepage() {
   const toast = useToast();
   const [carData, setCarData] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   // const history = unstable_HistoryRouter();
 
   useEffect(() => {
@@ -20,11 +22,14 @@ function Homepage() {
           const data = await response.json();
           setCarData(data.data);
           // console.log(data)
+          setLoading(false);
         } else {
           console.error("Failed to fetch car data.");
+          setLoading(false);
         }
       } catch (error) {
         console.error("Error while fetching car data:", error);
+        setLoading(false);
       }
     };
 
@@ -80,6 +85,13 @@ function Homepage() {
       });
     }
   };
+  if(loading){
+    return(
+      <Box display={"flex"} justifyContent={"center"} alignItems={"center"} h={"100vh"}>
+        <Loader></Loader>
+      </Box>
+    )
+  }
   return (
     <Box>
       <Navbar></Navbar>

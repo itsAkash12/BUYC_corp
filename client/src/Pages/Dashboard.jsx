@@ -29,6 +29,7 @@ import {
 import Navbar from "../Components/Navbar";
 import styles from "../Styles/LoginButton.module.css";
 import { useNavigate } from "react-router-dom";
+import Loader from "../Components/Loader";
 
 function Dashboard() {
   const toast = useToast();
@@ -39,6 +40,7 @@ function Dashboard() {
   const [editedCar, setEditedCar] = useState({});
   const [editedField, setEditedField] = useState("");
   const [render, setRender] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Fetch car data from the API endpoint
@@ -59,13 +61,16 @@ function Dashboard() {
           setCarData(data.data);
           console.log(data);
           setFlag(true);
+          setLoading(false);
         } else {
           console.error("Failed to fetch car data.");
           setFlag(false);
+          setLoading(false);
         }
       } catch (error) {
         setFlag(false);
         console.error("Error while fetching car data:", error);
+        setLoading(false);
       }
     };
 
@@ -180,7 +185,13 @@ function Dashboard() {
     // console.log(editedCar)
     setRender(true);
   };
-
+  if (loading) {
+    return (
+      <Box display={"flex"} justifyContent={"center"} alignItems={"center"} h={"100vh"}>
+        <Loader></Loader>
+      </Box>
+    );
+  }
   return (
     <Box>
       <Navbar></Navbar>
